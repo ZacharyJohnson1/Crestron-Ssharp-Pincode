@@ -80,6 +80,9 @@ namespace PincodeUtility
 
                 pincode = new Pincode();
                 pincode.Initialize(xpanel, 1, "1234", "1988", 4, true, true);
+
+                pincode.PasswordCorrectDelegate = () => xpanel.StringInput[1].StringValue = "Password Correct";
+                pincode.PasswordIncorrectDelegate = () => xpanel.StringInput[1].StringValue = "Password Incorrect";
             }
             catch (Exception e)
             {
@@ -87,6 +90,11 @@ namespace PincodeUtility
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="args"></param>
         void ui_SmartObjectChangeEvent(uint id, SmartObjectEventArgs args)
         {
             switch (args.SmartObjectArgs.ID)
@@ -97,7 +105,6 @@ namespace PincodeUtility
                     {
                         try
                         {
-                            CrestronConsole.PrintLine(args.Sig.Name);
                             if (pincode != null)
                                 pincode.PincodeEntry(args.Sig.Name);
                         }
@@ -111,6 +118,11 @@ namespace PincodeUtility
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="args"></param>
         void ui_SerialChangeEvent(uint id, SigEventArgs args)
         {
             throw new NotImplementedException();
@@ -121,9 +133,25 @@ namespace PincodeUtility
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="args"></param>
         void ui_DigitalChangeEvent(uint id, SigEventArgs args)
         {
-            throw new NotImplementedException();
+            if (args.Sig.BoolValue)
+            {
+                switch (args.Sig.Number)
+                {
+                    case 200:
+                    {
+                        if (pincode != null)
+                            pincode.Backspace();
+                        break;
+                    }
+                }
+            }
         }
 
         /// <summary>

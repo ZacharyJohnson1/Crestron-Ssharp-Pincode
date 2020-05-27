@@ -11,14 +11,55 @@ namespace PincodeUtility
 {
     public class Pincode
     {
+        /// <summary>
+        /// 
+        /// </summary>
         private BasicTriList _ui { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         private uint _serialInputJoin { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         private string _password { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         private string _backdoorPassword { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         private ushort _pinLimit { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         private bool _enableStarText { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         private bool _enableBackdoor { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public string PINEntry { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Action PasswordCorrectDelegate;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Action PasswordIncorrectDelegate;
 
         /// <summary>
         /// 
@@ -34,6 +75,7 @@ namespace PincodeUtility
             _backdoorPassword = backdoorPassword;
             _pinLimit = pinLimit;
             PINEntry = string.Empty;
+            _enableBackdoor = enableBackdoor;
             _enableStarText = enableStarText;
         }
 
@@ -43,21 +85,25 @@ namespace PincodeUtility
         /// <param name="digit"></param>
         public void PincodeEntry(string input)
         {
-            if (PINEntry.Contains("Correct") || PINEntry.Contains("Incorrect") || input.Equals("Misc_1"))
-                SetText(ClearText());
 
-            if (PINEntry.Length < _pinLimit && input != "Misc_1" && input != "Misc_2")
+            if (input.Equals("Misc_1"))
             {
-                PINEntry += input;
-                if(_enableStarText)
-                    GenerateStarText();
-                else
-                    SetText(PINEntry);
+                ClearText();
             }
             else if (input.Equals("Misc_2"))
             {
-                PINEntry = PincodeCompare() ? "Correct" : "Incorrect";
-                SetText(PINEntry);
+                bool passwordCorrect = PincodeCompare();
+                ClearText();
+
+                if(passwordCorrect && PasswordCorrectDelegate != null)
+                    PasswordCorrectDelegate.Invoke();
+                else if(!passwordCorrect && PasswordIncorrectDelegate != null)
+                    PasswordIncorrectDelegate.Invoke();
+            }
+            else if (PINEntry.Length < _pinLimit)
+            {
+                PINEntry += input;
+                SetPINText(PINEntry);
             }
             else
                 CrestronConsole.PrintLine("PIN limit exceeded");
@@ -75,10 +121,10 @@ namespace PincodeUtility
         /// 
         /// </summary>
         /// <returns></returns>
-        public string ClearText()
+        public void ClearText()
         {
             PINEntry = string.Empty;
-            return string.Empty;
+            _ui.StringInput[_serialInputJoin].StringValue = PINEntry;
         }
 
         /// <summary>
@@ -86,7 +132,11 @@ namespace PincodeUtility
         /// </summary>
         public void Backspace()
         {
-            PINEntry.Remove(PINEntry.Length - 1, 1);
+            if (PINEntry.Length > 0)
+            {
+                PINEntry = PINEntry.Remove(PINEntry.Length - 1, 1);
+                SetPINText(PINEntry);
+            }
         }
 
         /// <summary>
@@ -97,7 +147,7 @@ namespace PincodeUtility
             var starText = string.Empty;
             foreach (var ch in PINEntry)
                 starText += "*";
-            SetText(starText);
+            _ui.StringInput[_serialInputJoin].StringValue = starText;
         }
 
         /// <summary>
@@ -119,10 +169,12 @@ namespace PincodeUtility
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="text"></param>
-        private void SetText(string text)
+        private void SetPINText(string text)
         {
-            _ui.StringInput[_serialInputJoin].StringValue = text;
+            if (_enableStarText)
+                GenerateStarText();
+            else
+                _ui.StringInput[_serialInputJoin].StringValue = text;
         }
     }
 }
