@@ -74,16 +74,60 @@ namespace PincodeUtility
         /// <param name="pinLimit">set limit for number of pin digits allowed</param>
         /// <param name="enableBackdoor">enables backdoor password</param>
         /// <param name="enableStarText">enables star text as output to touchpanel</param>
-        public void Initialize(BasicTriList ui, uint serialInputJoin, string password, string backdoorPassword, ushort pinLimit, bool enableBackdoor, bool enableStarText)
+        public void Initialize(BasicTriList ui, uint serialInputJoin, string password)
         {
             _ui = ui;
             _serialInputJoin = serialInputJoin;
             _password = password;
-            _backdoorPassword = backdoorPassword;
-            _pinLimit = pinLimit;
+            _backdoorPassword = string.Empty;
+            _pinLimit = 4;
             PINEntry = string.Empty;
-            _enableBackdoor = enableBackdoor;
-            _enableStarText = enableStarText;
+            _enableBackdoor = false;
+            _enableStarText = false;
+        }
+
+        /// <summary>
+        /// Enables and sets the backdoor passowrd
+        /// </summary>
+        /// <param name="backdoorPassword">backdoor password</param>
+        public void EnableBackdoorPassword(string backdoorPassword)
+        {
+            _backdoorPassword = backdoorPassword;
+            _enableBackdoor = true;
+        }
+
+        /// <summary>
+        /// Disables backdoor password
+        /// </summary>
+        public void DisableBackdoor()
+        {
+            _backdoorPassword = string.Empty;
+            _enableBackdoor = false;
+        }
+
+        /// <summary>
+        /// Enables star text as password output
+        /// </summary>
+        public void EnableStarText()
+        {
+            _enableStarText = true;
+        }
+
+        /// <summary>
+        /// Disables star text as password output
+        /// </summary>
+        public void DisableStarText()
+        {
+            _enableStarText = false;
+        }
+
+        /// <summary>
+        /// Sets the limit to the amount of digits a PIN can be
+        /// </summary>
+        /// <param name="pinLimit"></param>
+        public void SetPinLimit(ushort pinLimit)
+        {
+            _pinLimit = pinLimit;
         }
 
         /// <summary>

@@ -80,7 +80,11 @@ namespace PincodeUtility
 
                 //create Pincode object
                 pincode = new Pincode();
-                pincode.Initialize(xpanel, 1, "1234", "1988", 4, true, true);
+                pincode.Initialize(xpanel, 1, "1234");
+
+                pincode.EnableBackdoorPassword("1988");
+                pincode.SetPinLimit(4);
+                pincode.EnableStarText();
 
                 pincode.PasswordCorrectDelegate = () => xpanel.StringInput[1].StringValue = "Password Correct";
                 pincode.PasswordIncorrectDelegate = () => xpanel.StringInput[1].StringValue = "Password Incorrect";
