@@ -78,6 +78,7 @@ namespace PincodeUtility
                 }
                 xpanel.Register();
 
+                //create Pincode object
                 pincode = new Pincode();
                 pincode.Initialize(xpanel, 1, "1234", "1988", 4, true, true);
 
@@ -91,7 +92,7 @@ namespace PincodeUtility
         }
 
         /// <summary>
-        /// 
+        /// SmartObject signal event callback
         /// </summary>
         /// <param name="id"></param>
         /// <param name="args"></param>
@@ -119,22 +120,27 @@ namespace PincodeUtility
         }
 
         /// <summary>
-        /// 
+        /// Serial signal event callback
         /// </summary>
         /// <param name="id"></param>
         /// <param name="args"></param>
         void ui_SerialChangeEvent(uint id, SigEventArgs args)
         {
-            throw new NotImplementedException();
-        }
-
-        void ui_AnalogChangeEvent(uint id, SigEventArgs args)
-        {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         /// <summary>
-        /// 
+        /// Analog signal event callback
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="args"></param>
+        void ui_AnalogChangeEvent(uint id, SigEventArgs args)
+        {
+            //throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Digital signal event callback
         /// </summary>
         /// <param name="id"></param>
         /// <param name="args"></param>
