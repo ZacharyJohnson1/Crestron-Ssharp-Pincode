@@ -1,5 +1,7 @@
-﻿MainAssembly=PincodeUtility.dll:bc99eaac57fbb3dfce63939f7624dfc7
+﻿MainAssembly=PincodeUtility.dll:ac7b465242c7d4122491fbcd71eb53ec
 MainAssemblyMinFirmwareVersion=1.009.0029
+MainAssemblyResource=SimplSharpData.dat:820b61c48c8a2cace82957eed4cc377c
+MainAssemblyResource=SimplSharpData.dat.der:bf862965c00f3e6ec535e4e00e82d30c
 MainAssemblyResource=SimplSharpData.dat:820b61c48c8a2cace82957eed4cc377c
 MainAssemblyResource=SimplSharpData.dat.der:bf862965c00f3e6ec535e4e00e82d30c
 ü

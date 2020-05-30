@@ -53,15 +53,27 @@ namespace PincodeUtility
 
         /// <summary>
         /// Action delegate invoked when the correct password is entered
-        /// Can be assigned to a method outside of the Pincode class
+        /// A method outside of the Pincode class can be assigned to it to offer flexability/customization
         /// </summary>
         public Action PasswordCorrectDelegate;
 
         /// <summary>
         /// Action delegate invoked when an incorrect password is entered
-        /// Can be assigned to a method outside of the Pincode class
+        /// A method outside of the Pincode class can be assigned to it to offer flexability/customization
         /// </summary>
         public Action PasswordIncorrectDelegate;
+
+        /// <summary>
+        /// Action delegate invoked when the Misc_1 button of a SmartObject keypad is entered
+        /// A method outside of the Pincode class can be assigned to it to offer flexability/customization
+        /// </summary>
+        public Action PasswordMiscOneDelegate;
+
+        /// <summary>
+        /// Action delegate invoked when the Misc_2 button of a SmartObject keypad is entered
+        /// A method outside of the Pincode class can be assigned to it to offer flexability/customization
+        /// </summary>
+        public Action PasswordMiscTwoDelegate;
 
 
         /// <summary>
@@ -140,22 +152,27 @@ namespace PincodeUtility
 
             if (input.Equals("Misc_1"))
             {
-                ClearText();
+                if (PasswordMiscOneDelegate != null)
+                {
+                    Action passwordMiscOneDel = PasswordMiscOneDelegate;
+                    passwordMiscOneDel.Invoke();
+                }
+                else
+                {
+                    LogError(">>> PasswordMiscOneDelegate is null. Assign a method to this delegate before use.");
+                }
+
             }
             else if (input.Equals("Misc_2"))
             {
-                bool passwordCorrect = PincodeCompare();
-                ClearText();
-
-                if (passwordCorrect && PasswordCorrectDelegate != null)
+                if (PasswordMiscTwoDelegate != null)
                 {
-                    var passwordCorrectDel = PasswordCorrectDelegate;
-                    passwordCorrectDel.Invoke();
+                    Action passwordMiscTwoDel = PasswordMiscTwoDelegate;
+                    passwordMiscTwoDel.Invoke();
                 }
-                else if (!passwordCorrect && PasswordIncorrectDelegate != null)
+                else
                 {
-                    var passwordIncorrectDel = PasswordIncorrectDelegate;
-                    passwordIncorrectDel.Invoke();
+                    LogError(">>> PasswordMiscOneDelegate is null. Assign a method to this delegate before use.");
                 }
             }
             else if (PINEntry.Length < _pinLimit)
@@ -164,7 +181,31 @@ namespace PincodeUtility
                 SetPINText(PINEntry);
             }
             else
-                CrestronConsole.PrintLine("PIN limit exceeded");
+            {
+                CrestronConsole.PrintLine(">>> PIN limit exceeded");
+            }
+        }
+
+
+        /// <summary>
+        /// compares the entered password (PINEntry) with the Pincode instance's password(s)
+        /// invokes Action delegates if password is correct/incorrect
+        /// </summary>
+        public void ValidatePINEntry()
+        {
+            bool passwordCorrect = PincodeCompare();
+            ClearText();
+
+            if (passwordCorrect && PasswordCorrectDelegate != null)
+            {
+                Action passwordCorrectDel = PasswordCorrectDelegate;
+                passwordCorrectDel.Invoke();
+            }
+            else if (!passwordCorrect && PasswordIncorrectDelegate != null)
+            {
+                Action passwordIncorrectDel = PasswordIncorrectDelegate;
+                passwordIncorrectDel.Invoke();
+            }
         }
 
         /// <summary>
@@ -182,7 +223,10 @@ namespace PincodeUtility
         public void ClearText()
         {
             PINEntry = string.Empty;
-            _ui.StringInput[_serialInputJoin].StringValue = PINEntry;
+            if (_ui != null)
+                _ui.StringInput[_serialInputJoin].StringValue = PINEntry;
+            else
+                LogError(">>> {0} is null. Assign a valid BasicTriList type to _ui in the Initalize method.");
         }
 
         /// <summary>
@@ -206,7 +250,10 @@ namespace PincodeUtility
             var starText = string.Empty;
             foreach (var ch in PINEntry)
                 starText += "*";
-            _ui.StringInput[_serialInputJoin].StringValue = starText;
+            if(_ui != null)
+                _ui.StringInput[_serialInputJoin].StringValue = starText;
+            else
+                LogError(">>> {0} is null. Assign a valid BasicTriList type to _ui in the Initalize method.");
         }
 
         /// <summary>
@@ -233,7 +280,22 @@ namespace PincodeUtility
             if (_enableStarText)
                 GenerateStarText();
             else
-                _ui.StringInput[_serialInputJoin].StringValue = text;
+            {
+                if(_ui != null)
+                    _ui.StringInput[_serialInputJoin].StringValue = text;
+                else
+                    LogError(">>> {0} is null. Assign a valid BasicTriList type to _ui in the Initalize method.");
+            }
+        }
+
+        /// <summary>
+        /// Prints error message to console and logs error in ErrorLog
+        /// </summary>
+        /// <param name="msg"></param>
+        private void LogError(string msg)
+        {
+            CrestronConsole.PrintLine(msg);
+            ErrorLog.Error(msg);
         }
     }
 }

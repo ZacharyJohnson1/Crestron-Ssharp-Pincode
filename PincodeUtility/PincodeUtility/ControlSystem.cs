@@ -42,7 +42,7 @@ namespace PincodeUtility
             }
             catch (Exception e)
             {
-                ErrorLog.Error("Error in the constructor: {0}", e.Message);
+                ErrorLog.Error(">>> Error in the constructor: {0}", e.Message);
             }
         }
 
@@ -86,12 +86,14 @@ namespace PincodeUtility
                 pincode.SetPinLimit(4);
                 pincode.EnableStarText();
 
+                pincode.PasswordMiscOneDelegate = () => pincode.ClearText();
+                pincode.PasswordMiscTwoDelegate = () => pincode.ValidatePINEntry();
                 pincode.PasswordCorrectDelegate = () => xpanel.StringInput[1].StringValue = "Password Correct";
                 pincode.PasswordIncorrectDelegate = () => xpanel.StringInput[1].StringValue = "Password Incorrect";
             }
             catch (Exception e)
             {
-                ErrorLog.Error("Error in InitializeSystem: {0}", e.Message);
+                ErrorLog.Error(">>> Error in InitializeSystem: {0}", e.Message);
             }
         }
 
@@ -115,7 +117,7 @@ namespace PincodeUtility
                         }
                         catch (Exception e)
                         {
-                            ErrorLog.Error("Error in ui_SmartObjectChangeEvent: {0}", e.Message);
+                            ErrorLog.Error(">>> Error in ui_SmartObjectChangeEvent: {0}", e.Message);
                         }
                     }
                     break;
@@ -156,8 +158,15 @@ namespace PincodeUtility
                 {
                     case 200:
                     {
-                        if (pincode != null)
-                            pincode.Backspace();
+                        try
+                        {
+                            if (pincode != null)
+                                pincode.Backspace();
+                        }
+                        catch (Exception e)
+                        {
+                            ErrorLog.Error(e.Message);
+                        }
                         break;
                     }
                 }
