@@ -30,3 +30,4 @@ pincode.PasswordIncorrectDelegate = () => xpanel.StringInput[1].StringValue = "P
 public void DoSomething() { pincode.ClearText(); }
 ```
 
+![Example](Capture2.PNG)
