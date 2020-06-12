@@ -86,7 +86,7 @@ namespace PincodeUtility
         /// <param name="pinLimit">set limit for number of pin digits allowed</param>
         /// <param name="enableBackdoor">enables backdoor password</param>
         /// <param name="enableStarText">enables star text as output to touchpanel</param>
-        public void Initialize(BasicTriList ui, uint serialInputJoin, string password)
+        public Pincode(BasicTriList ui, uint serialInputJoin, string password)
         {
             _ui = ui;
             _serialInputJoin = serialInputJoin;
@@ -254,22 +254,6 @@ namespace PincodeUtility
                 _ui.StringInput[_serialInputJoin].StringValue = starText;
             else
                 LogError(">>> {0} is null. Assign a valid BasicTriList type to _ui in the Initalize method.");
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private void ReadPasswordFromFile()
-        {
-
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private void WritePasswordToFile()
-        {
-
         }
 
         /// <summary>

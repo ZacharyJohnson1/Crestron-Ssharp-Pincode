@@ -79,8 +79,7 @@ namespace PincodeUtility
                 xpanel.Register();
 
                 //create Pincode object
-                pincode = new Pincode();
-                pincode.Initialize(xpanel, 1, "1234");
+                pincode = new Pincode(xpanel, 1, "1234");
 
                 pincode.EnableBackdoorPassword("1988");
                 pincode.SetPinLimit(4);
